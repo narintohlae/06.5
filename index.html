@@ -974,51 +974,60 @@ const POS_APP = {
             this.updateCartDisplay();
         },
 
-        setupEventListeners() {
-            document.getElementById('import-from-sheet-btn').addEventListener('click', () => this.importFromGoogleSheet(false));
-            const barcodeInput = document.getElementById('barcode-input');
-            barcodeInput.addEventListener('input', this.handleInstantSearch.bind(this));
-            barcodeInput.addEventListener('keydown', this.handleSearchKeyDown.bind(this));
-            barcodeInput.addEventListener('keydown', this.detectKeyboardLayout.bind(this));
-            document.getElementById('discount-input').addEventListener('input', this.updateCartOnInput.bind(this));
-            document.getElementById('discount-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.showPaymentModal(); }});
-            document.querySelector('.finish-sale').addEventListener('click', this.showPaymentModal.bind(this));
-            document.querySelector('.clear-cart').addEventListener('click', this.showClearCartConfirmModal.bind(this));
-            document.getElementById('filter-history-btn').addEventListener('click', this.filterHistoryByDateTime.bind(this));
-            document.getElementById('today-history-btn').addEventListener('click', this.filterHistoryForToday.bind(this));
-            document.getElementById('export-excel-btn').addEventListener('click', this.exportToExcel.bind(this));
-            document.getElementById('clear-all-history-btn').addEventListener('click', this.showClearOptionsModal.bind(this));
-            document.getElementById('cash-received-input').addEventListener('input', this.calculateChange.bind(this));
-            document.getElementById('cash-received-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.calculateChange(); document.getElementById('confirm-sale-btn').focus(); }});
-            document.getElementById('confirm-sale-btn').addEventListener('click', this.confirmSale.bind(this));
-            document.getElementById('cancel-payment-btn').addEventListener('click', this.hidePaymentModal.bind(this));
-            document.getElementById('cancel-delete-btn').addEventListener('click', this.hideDeleteConfirmModal.bind(this));
-            document.getElementById('clear-local-btn').addEventListener('click', this.clearHistoryLocally.bind(this));
-            document.getElementById('clear-db-btn').addEventListener('click', this.executeClearAllHistory.bind(this));
-            document.getElementById('cancel-clear-btn').addEventListener('click', this.hideClearOptionsModal.bind(this));
-            document.getElementById('info-modal-ok-btn').addEventListener('click', this.hideInfoModal.bind(this));
-            document.addEventListener('keydown', this.handleGlobalKeyDown.bind(this));
-            document.getElementById('manage-products-btn').addEventListener('click', this.showProductMgmtModal.bind(this));
-            document.getElementById('close-product-mgmt-btn').addEventListener('click', this.hideProductMgmtModal.bind(this));
-            document.getElementById('add-new-product-btn').addEventListener('click', () => this.showProductEditorModal());
-            document.getElementById('product-editor-form').addEventListener('submit', this.handleSaveProduct.bind(this));
-            document.getElementById('cancel-product-editor-btn').addEventListener('click', this.hideProductEditorModal.bind(this));
-            document.getElementById('add-pricing-unit-btn').addEventListener('click', this.handleAddPricingUnit.bind(this));
-            document.getElementById('product-list-container').addEventListener('click', this.handleProductListActions.bind(this));
-            document.getElementById('product-editor-modal').addEventListener('click', this.handlePricingUnitActions.bind(this));
-            
-            document.getElementById('product-search-input').addEventListener('input', (e) => {
-                this.renderProductList(e.target.value);
-            });
-            
-            document.getElementById('auto-import-toggle').addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    this.startAutoImportPolling();
-                } else {
-                    this.stopAutoImportPolling();
+setupEventListeners() {
+            document.getElementById('import-from-sheet-btn').addEventListener('click', () => this.importFromGoogleSheet(false));
+            const barcodeInput = document.getElementById('barcode-input');
+            barcodeInput.addEventListener('input', this.handleInstantSearch.bind(this));
+            barcodeInput.addEventListener('keydown', this.handleSearchKeyDown.bind(this));
+            barcodeInput.addEventListener('keydown', this.detectKeyboardLayout.bind(this));
+            document.getElementById('discount-input').addEventListener('input', this.updateCartOnInput.bind(this));
+            document.getElementById('discount-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.showPaymentModal(); }});
+            document.querySelector('.finish-sale').addEventListener('click', this.showPaymentModal.bind(this));
+            document.querySelector('.clear-cart').addEventListener('click', this.showClearCartConfirmModal.bind(this));
+            document.getElementById('filter-history-btn').addEventListener('click', this.filterHistoryByDateTime.bind(this));
+            document.getElementById('today-history-btn').addEventListener('click', this.filterHistoryForToday.bind(this));
+            document.getElementById('export-excel-btn').addEventListener('click', this.exportToExcel.bind(this));
+            document.getElementById('clear-all-history-btn').addEventListener('click', this.showClearOptionsModal.bind(this));
+            document.getElementById('cash-received-input').addEventListener('input', this.calculateChange.bind(this));
+            document.getElementById('cash-received-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.calculateChange(); document.getElementById('confirm-sale-btn').focus(); }});
+            document.getElementById('confirm-sale-btn').addEventListener('click', this.confirmSale.bind(this));
+            document.getElementById('cancel-payment-btn').addEventListener('click', this.hidePaymentModal.bind(this));
+            document.getElementById('cancel-delete-btn').addEventListener('click', this.hideDeleteConfirmModal.bind(this));
+            document.getElementById('clear-local-btn').addEventListener('click', this.clearHistoryLocally.bind(this));
+            document.getElementById('clear-db-btn').addEventListener('click', this.executeClearAllHistory.bind(this));
+            document.getElementById('cancel-clear-btn').addEventListener('click', this.hideClearOptionsModal.bind(this));
+            document.getElementById('info-modal-ok-btn').addEventListener('click', this.hideInfoModal.bind(this));
+            document.addEventListener('keydown', this.handleGlobalKeyDown.bind(this));
+            document.getElementById('manage-products-btn').addEventListener('click', this.showProductMgmtModal.bind(this));
+            document.getElementById('close-product-mgmt-btn').addEventListener('click', this.hideProductMgmtModal.bind(this));
+            document.getElementById('add-new-product-btn').addEventListener('click', () => this.showProductEditorModal());
+            document.getElementById('product-editor-form').addEventListener('submit', this.handleSaveProduct.bind(this));
+            document.getElementById('cancel-product-editor-btn').addEventListener('click', this.hideProductEditorModal.bind(this));
+            document.getElementById('add-pricing-unit-btn').addEventListener('click', this.handleAddPricingUnit.bind(this));
+            document.getElementById('product-list-container').addEventListener('click', this.handleProductListActions.bind(this));
+            document.getElementById('product-editor-modal').addEventListener('click', this.handlePricingUnitActions.bind(this));
+            
+            document.getElementById('product-search-input').addEventListener('input', (e) => {
+                this.renderProductList(e.target.value);
+            });
+            
+            document.getElementById('auto-import-toggle').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    this.startAutoImportPolling();
+                } else {
+                    this.stopAutoImportPolling();
+                }
+            });
+
+            // ===== START: โค้ดที่เพิ่มเข้ามาใหม่ =====
+            // ป้องกันการ Submit ฟอร์มเมื่อกด Enter ใน Product Editor
+            document.getElementById('product-editor-form').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                    e.preventDefault();
                 }
             });
-        },
+            // ===== END: โค้ดที่เพิ่มเข้ามาใหม่ =====
+        },
         
         async _hashText(text) {
             if (!text) return 0;
@@ -1852,4 +1861,5 @@ const POS_APP = {
     });
 </script>
 </body>
+
 </html>
