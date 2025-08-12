@@ -1094,6 +1094,12 @@ const POS_APP = {
                 e.preventDefault();
             }
         });
+        document.getElementById('confirm-sale-btn').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.confirmSale();
+    }
+    });
     },
     
     async _hashText(text) {
