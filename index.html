@@ -938,7 +938,7 @@ autoImportInterval: null,
             if (window.firebaseReady) {
                 clearInterval(firebaseCheckInterval);
                 if (window.firebaseFailed) {
-                    this.showInfoModal(&quot;ข้อผิดพลาดร้ายแรง&quot;, `ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ${window.firebaseError}`, true);
+                    this.showInfoModal("ข้อผิดพลาดร้ายแรง", `ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ${window.firebaseError}`, true);
                     return;
                 }
                 this.start();
@@ -1923,4 +1923,5 @@ document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {
 </body>
 
 </html>
+
 
