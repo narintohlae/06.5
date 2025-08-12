@@ -771,29 +771,6 @@
         </div>
 
         <div class="filter-group">
-            <label for="history-category-filter">หมวดหมู่</label>
-            <select id="history-category-filter">
-                <option value="">ทั้งหมด</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>ยอดขายสุทธิ (บาท)</label>
-            <div style="display: flex; gap: 0.5rem;">
-                <input type="number" id="history-amount-min" placeholder="ตั้งแต่">
-                <input type="number" id="history-amount-max" placeholder="ถึง">
-            </div>
-        </div>
-
-        <div class="filter-group">
-             <label>&nbsp;</label>
-            <div class="filter-group-inline">
-                <input type="checkbox" id="history-discount-filter" style="width: auto; height: auto;">
-                <label for="history-discount-filter" style="margin-bottom: 0;">มีส่วนลดเท่านั้น</label>
-            </div>
-        </div>
-
-        <div class="filter-group">
             <label for="start-date">ช่วงวันที่</label>
             <div style="display: flex; gap: 0.5rem;">
                 <input type="date" id="start-date" title="วันที่เริ่มต้น">
@@ -1077,7 +1054,7 @@ const POS_APP = {
         // --- History Filter Event Listeners ---
         document.getElementById('filter-history-btn').addEventListener('click', this.filterHistoryByDateTime.bind(this));
         document.getElementById('today-history-btn').addEventListener('click', this.filterHistoryForToday.bind(this));
-        ['history-search-input', 'history-category-filter', 'history-amount-min', 'history-amount-max', 'history-discount-filter'].forEach(id => {
+        ['history-search-input'].forEach(id => {
             document.getElementById(id).addEventListener('input', () => this.updateHistoryDisplay());
         });
 
@@ -1322,38 +1299,11 @@ const POS_APP = {
             this.state.productsFromFirestore = products.sort((a, b) => (a.productName || '').localeCompare(b.productName || '')); 
             this.prepareSearchableProducts(); 
             this.renderProductList(); 
-            this.populateCategoryFilter(); // <-- NEW: Populate filter dropdown
         }, (error) => { 
             console.error("Error listening for products:", error); 
             this.showInfoModal("ข้อผิดพลาด", "ไม่สามารถโหลดรายการสินค้าจากฐานข้อมูลได้", true); 
         }); 
     },
-
-    // ================== START: NEW FUNCTION ==================
-    populateCategoryFilter() {
-        const categoryFilter = document.getElementById('history-category-filter');
-        if (!categoryFilter) return;
-
-        const categories = new Set();
-        this.state.productsFromFirestore.forEach(product => {
-            if (product.category && product.category.trim() !== '') {
-                categories.add(product.category.trim());
-            }
-        });
-
-        // Clear existing options except the first one ("ทั้งหมด")
-        while (categoryFilter.options.length > 1) {
-            categoryFilter.remove(1);
-        }
-
-        Array.from(categories).sort().forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categoryFilter.appendChild(option);
-        });
-    },
-    // =================== END: NEW FUNCTION ===================
     
     getPriceForQuantity(pricingUnit, quantity) {
         if (!pricingUnit) return 0;
@@ -2165,10 +2115,6 @@ const POS_APP = {
 
         // --- Get all filter values ---
         const searchFilter = document.getElementById('history-search-input').value.toLowerCase().trim();
-        const categoryFilter = document.getElementById('history-category-filter').value;
-        const minAmount = parseFloat(document.getElementById('history-amount-min').value) || 0;
-        const maxAmount = parseFloat(document.getElementById('history-amount-max').value) || Infinity;
-        const hasDiscount = document.getElementById('history-discount-filter').checked;
 
         // --- Apply all filters ---
         const filteredHistory = this.state.salesHistory.filter(sale => {
@@ -2176,16 +2122,7 @@ const POS_APP = {
             const itemMatch = sale.items.some(item => item.name.toLowerCase().includes(searchFilter));
             const textMatch = searchFilter === '' || saleIdMatch || itemMatch;
 
-            const categoryMatch = !categoryFilter || sale.items.some(item => {
-                const product = this.state.searchableProductUnits.find(p => p.cartItemId === item.cartItemId);
-                return product && product.category === categoryFilter;
-            });
-            
-            const amountMatch = sale.total >= minAmount && sale.total <= maxAmount;
-
-            const discountMatch = !hasDiscount || sale.discount > 0;
-
-            return textMatch && categoryMatch && amountMatch && discountMatch;
+            return textMatch;
         });
 
         historyBody.innerHTML = '';
@@ -2373,10 +2310,6 @@ const POS_APP = {
         document.getElementById('end-date').valueAsDate = todayEnd;
         // Reset other filters
         document.getElementById('history-search-input').value = '';
-        document.getElementById('history-category-filter').value = '';
-        document.getElementById('history-amount-min').value = '';
-        document.getElementById('history-amount-max').value = '';
-        document.getElementById('history-discount-filter').checked = false;
 
         this.loadSalesHistoryFromFirestore(todayStart.toISOString(), todayEnd.toISOString()); 
     },
