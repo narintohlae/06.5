@@ -947,7 +947,7 @@ autoImportInterval: null,
     },
     
     start() {
-        console.log(&quot;Initializing main application logic...&quot;);
+        closeButton.innerHTML = '&amp;times;';
         const barcodeInput = document.getElementById(&#39;barcode-input&#39;);
         if (barcodeInput) this.state.basePlaceholder = barcodeInput.getAttribute(&#39;data-base-placeholder&#39;);
         this.updatePlaceholderHint();
@@ -1923,6 +1923,7 @@ document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {
 </body>
 
 </html>
+
 
 
 
