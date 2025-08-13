@@ -993,6 +993,7 @@ const POS_APP = {
         currentEditingProductId: null,
         lastSheetHash: null,
         autoImportInterval: null,
+        _costCalculationListener: null,
     },
 
     init() {
@@ -1463,6 +1464,7 @@ const POS_APP = {
     },
     hideProductMgmtModal() { document.getElementById('product-mgmt-modal').style.display = 'none'; },
     
+    // ================== START: MODIFIED FUNCTION ==================
     showProductEditorModal(product = null) {
         this.state.currentEditingProductId = product ? product.id : null;
         const form = document.getElementById('product-editor-form');
@@ -1485,7 +1487,48 @@ const POS_APP = {
             this.addPricingUnitRow(); 
         }
         document.getElementById('product-editor-modal').style.display = 'flex';
+
+        const container = document.getElementById('pricing-units-container');
+        if (this.state._costCalculationListener) {
+            container.removeEventListener('input', this.state._costCalculationListener);
+        }
+
+        this.state._costCalculationListener = (e) => {
+            const target = e.target;
+            if (!target.matches('input[data-field="cost"], input[data-field="conversionFactor"]')) {
+                return;
+            }
+
+            const firstCard = container.querySelector('.pricing-unit-card:first-child');
+            if (!firstCard) return;
+
+            const firstCostInput = firstCard.querySelector('input[data-field="cost"]');
+            const baseCost = parseFloat(firstCostInput.value) || 0;
+            
+            const changedCard = target.closest('.pricing-unit-card');
+
+            if (changedCard === firstCard && target.dataset.field === 'cost') {
+                const allOtherCards = container.querySelectorAll('.pricing-unit-card:not(:first-child)');
+                allOtherCards.forEach(card => {
+                    const conversionInput = card.querySelector('input[data-field="conversionFactor"]');
+                    const costInput = card.querySelector('input[data-field="cost"]');
+                    if (conversionInput && costInput) {
+                        const factor = parseFloat(conversionInput.value) || 0;
+                        costInput.value = (baseCost * factor).toFixed(2);
+                    }
+                });
+            } 
+            else if (changedCard !== firstCard && target.dataset.field === 'conversionFactor') {
+                const costInput = changedCard.querySelector('input[data-field="cost"]');
+                if (costInput) {
+                    const factor = parseFloat(target.value) || 0;
+                    costInput.value = (baseCost * factor).toFixed(2);
+                }
+            }
+        };
+        container.addEventListener('input', this.state._costCalculationListener);
     },
+    // =================== END: MODIFIED FUNCTION ===================
 
     hideProductEditorModal() { document.getElementById('product-editor-modal').style.display = 'none'; },
     
@@ -1587,14 +1630,14 @@ const POS_APP = {
     // ================== START: MODIFIED FUNCTION ==================
     handleAddPricingUnit() {
         const firstUnitCard = document.querySelector('#pricing-units-container .pricing-unit-card');
-        let existingCost = 0;
+        let baseCost = 0;
         if (firstUnitCard) {
             const costInput = firstUnitCard.querySelector('input[data-field="cost"]');
             if (costInput) {
-                existingCost = parseFloat(costInput.value) || 0;
+                baseCost = parseFloat(costInput.value) || 0;
             }
         }
-        this.addPricingUnitRow({ cost: existingCost });
+        this.addPricingUnitRow({ cost: baseCost, conversionFactor: 1 });
     },
     // =================== END: MODIFIED FUNCTION ===================
 
