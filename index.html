@@ -1583,8 +1583,21 @@ const POS_APP = {
                 </button>
             </div>`;
     },
+    
+    // ================== START: MODIFIED FUNCTION ==================
+    handleAddPricingUnit() {
+        const firstUnitCard = document.querySelector('#pricing-units-container .pricing-unit-card');
+        let existingCost = 0;
+        if (firstUnitCard) {
+            const costInput = firstUnitCard.querySelector('input[data-field="cost"]');
+            if (costInput) {
+                existingCost = parseFloat(costInput.value) || 0;
+            }
+        }
+        this.addPricingUnitRow({ cost: existingCost });
+    },
+    // =================== END: MODIFIED FUNCTION ===================
 
-    handleAddPricingUnit() { this.addPricingUnitRow(); },
     handlePricingUnitActions(e) { 
         const button = e.target.closest('button'); 
         if (!button) return; 
